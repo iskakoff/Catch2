@@ -73,7 +73,9 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Prepare environment
-      run: sudo apt-get install -y ninja-build ${{matrix.other_pkgs}}
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ninja-build ${{matrix.other_pkgs}}
 
     - name: Configure build
       working-directory: ${{runner.workspace}}
@@ -100,5 +102,4 @@ jobs:
       env:
           CTEST_OUTPUT_ON_FAILURE: 1
       working-directory: ${{runner.workspace}}/build
-      # Hardcode 2 cores we know are there
-      run: ctest -C ${{matrix.build_type}} -j 2 ${{matrix.other_ctest_args}}
+      run: ctest -C ${{matrix.build_type}} -j `nproc` ${{matrix.other_ctest_args}}
